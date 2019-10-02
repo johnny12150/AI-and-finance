@@ -20,20 +20,21 @@ def putr(K):
     return np.maximum(K-x, 0) - put[K]
 
 # 第一小題
-b1 = callr(10900) - putr(11000) # X
-b2 = callr(10900) - putr(11100) # X
+b1 = -putr(11100) + putr(10900)
+b2 = -putr(11000) + putr(10900)
 b3 = callr(10900) - callr(11000)
 b4 = callr(10900) - callr(11100)
-b5 = callr(11000) - putr(11100) # X
 b6 = callr(11000) - callr(11100)
 b7 = -putr(11100) + putr(11000)
-# 剩餘兩種put - put
-plt.plot(x, b7, 'y', [x[0], x[-1]], [0, 0], '--')
+# 買權
+plt.plot(x, b3, x, b4, x, b6)
+# 賣權
+plt.plot(x, b1, x, b2, x, b7)
 
 # 第二小題
 # A. straddle
-straddle1 = callr(11100) + putr(11100)
-straddle2 = -callr(11100) - putr(11100)
+straddle1 = callr(11000) + putr(11000)
+straddle2 = -callr(11000) - putr(11000)
 plt.plot(x, straddle1, 'r', x, straddle2, 'r')
 
 # B. strangle
@@ -41,8 +42,12 @@ st1 = callr(11200) + putr(10800)
 st2 = -callr(11200) - putr(10800)
 plt.plot(x, st1, 'g', x, st2, 'g')
 
+# 比較
+plt.plot(x, straddle1, 'r', x, st1, 'g')
+plt.plot(x, straddle2, 'r', x, st2, 'g')
+
 # 第三小題
 bu1 = putr(10800) + putr(11200) - putr(11000)*2
-bu2 = -putr(10800) - putr(11200) + putr(11000)*2
+bu2 = putr(10700) + putr(11300) - putr(11000)*2
 plt.plot(x, bu1, x, bu2)
 
