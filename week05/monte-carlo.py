@@ -19,6 +19,17 @@ def BLSprice(S, L, T, r, vol):
     call = S*norm.cdf(d1)-L*math.exp(-r*T)*norm.cdf(d2)
     return call
 
+def BisectionBLS(S, L, T, r, call, tol):
+    left = 0.00000000000001
+    right = 1
+    while(right-left > tol):
+        middle = (left+right)/2
+        # 異號
+        if (BLSprice(S, L, T, r, middle)-call) * (BLSprice(S, L, T, r, left)-call) < 0:
+            right = middle
+        else:
+            left = middle
+    return (left+right)/2
 
 S =50
 L =40
@@ -70,8 +81,16 @@ def BTcall(S, T, R, vol, N, L):
             call += (priceT[r][N] - L)*probT[r][N]
     return call*math.exp(-R*T)
 
-# TODO: 切的越多期會越接近black-shoes
+# TODO: 切的越多期會越接近black-scholes
 print(BTcall(S, T, r, vol, N, L))
 
+call_bl = BLSprice(S, L, T, r, vol)
+x = np.zeros((100, 1))
+y = np.zeros((100, 1))
+for i in range(100):
+    x[i] = i/100
+    y[i] = BLSprice(S, L, T, r, x[i]) - call_bl
+plt.plot(x, y, 'r', [0, 1], [0,0], '--')
 
-
+# 推vol
+print(BisectionBLS(S, L, T, r, call_bl, 0.00001))
